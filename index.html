@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Lives - Test Vocaboli 🌸</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --text-main: #4a4e69;
+            --text-light: #9fa0b3;
+            --primary: #b583ff;
+            --primary-hover: #9b63f8;
+            --correct: #84dcc6;
+            --wrong: #ff9b9b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+            padding: 20px;
+        }
+
+        .app-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            color: var(--text-main);
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Bottone Custom */
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 20px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s ease;
+            box-shadow: 0 8px 20px rgba(181, 131, 255, 0.4);
+            font-family: inherit;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(181, 131, 255, 0.5);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        /* UI Quiz */
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-box {
+            background-color: white;
+            border: 2px dashed var(--primary);
+            border-radius: 20px;
+            padding: 30px 20px;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s;
+            margin-bottom: 25px;
+            text-align: center;
+            color: var(--text-main);
+            background: white;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(181, 131, 255, 0.1);
+        }
+
+        /* UI Risultati */
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            font-weight: 700;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 10px 20px rgba(181, 131, 255, 0.3);
+        }
+
+        .vote-text {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .results-list {
+            max-height: 350px;
+            overflow-y: auto;
+            margin-bottom: 30px;
+            padding-right: 10px;
+            text-align: left;
+        }
+
+        .result-item {
+            padding: 16px;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            font-size: 15px;
+            background: white;
+            border-left: 6px solid #ccc;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        .result-item.correct {
+            border-left-color: var(--correct);
+        }
+
+        .result-item.wrong {
+            border-left-color: var(--wrong);
+        }
+
+        .result-it {
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-main);
+            font-size: 16px;
+        }
+
+        .result-en {
+            color: #1a5e35;
+        }
+
+        .result-err {
+            color: #7a1f1f;
+            text-decoration: line-through;
+            margin-right: 10px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d0b3ff; border-radius: 10px; }
+
+        .hint {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- START SCREEN -->
+        <div id="start-screen" class="screen active">
+            <h1>Digital Lives ☁️</h1>
+            <p>Mettiti alla prova con i vocaboli di inglese.<br>Ti verranno proposte <strong>10 parole casuali</strong> in italiano e dovrai scriverle in inglese.</p>
+            <p style="font-size: 14px; color: var(--text-light); font-weight: 600;">
+                Presta attenzione a come sono scritte sul libro!
+            </p>
+            <button onclick="startQuiz()">Inizia il Test ✨</button>
+        </div>
+
+        <!-- QUIZ SCREEN -->
+        <div id="quiz-screen" class="screen">
+            <div class="progress-container">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+            <div id="question-counter" style="color: var(--text-light); font-weight: 600; margin-bottom: 10px;">Domanda 1 di 10</div>
+            
+            <div id="question-text" class="question-box">
+                Caricare il telefono
+            </div>
+            
+            <input type="text" id="answer-input" placeholder="Scrivi in inglese qui..." autocomplete="off">
+            
+            <button onclick="checkAnswer()">Conferma</button>
+            <div class="hint">Premi 'Invio' per confermare</div>
+        </div>
+
+        <!-- RESULT SCREEN -->
+        <div id="result-screen" class="screen">
+            <h1>Risultati 🎉</h1>
+            
+            <div class="score-circle" id="score-display">
+                0/10
+            </div>
+            
+            <div id="vote-message" class="vote-text">
+                Bravissimo!
+            </div>
+            
+            <div class="results-list" id="results-list">
+                <!-- I risultati verranno generati qui via JS -->
+            </div>
+            
+            <button onclick="resetQuiz()">Riprova 🔄</button>
+        </div>
+
+    </div>
+
+    <script>
+        // Database dei vocaboli aggiornato in base agli appunti a matita
+        const vocabolario = [
+            // Attività
+            { it: "caricare il telefono", en: "charge the battery" },
+            { it: "scrivere agli amici", en: "chat to friends" },
+            { it: "guardare il meteo", en: "check the weather forecast" },
+            { it: "scaricare una app", en: "download an app" },
+            { it: "guardare le indicazioni", en: "get directions" },
+            { it: "ascoltare musica/podcast", en: "listen to music and podcasts" },
+            { it: "guardare informazioni", en: "look up information" }, // Corretto
+            { it: "fare una chiamata", en: "make a phone call" },
+            { it: "postare un messaggio/foto/video sui social media", en: "post a message / photo / video on social media" },
+            { it: "impostare una sveglia", en: "set an alarm" },
+            { it: "fare una foto", en: "take a photo" },
+            { it: "guardare un video", en: "watch a video" },
+            
+            // Gadget
+            { it: "cavo", en: "cable" },
+            { it: "tastiera", en: "keyboard" },
+            { it: "mouse", en: "mouse" },
+            { it: "caricatore portatile", en: "portable charger" },
+            { it: "stampante", en: "printer" },
+            { it: "schermo", en: "screen" },
+            { it: "casse", en: "speakers" },
+            { it: "chiavetta USB", en: "USB key" },
+            { it: "assistente vocale", en: "voice assistant" },
+            { it: "fotocamera", en: "webcam" }
+        ];
+
+        const TOTAL_QUESTIONS = 10;
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+
+        // Funzione per mostrare le schermate
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // Funzione per mescolare l'array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startQuiz() {
+            // Prepara le domande
+            const shuffled = shuffleArray([...vocabolario]);
+            currentQuestions = shuffled.slice(0, TOTAL_QUESTIONS);
+            
+            // Resetta variabili
+            currentIndex = 0;
+            score = 0;
+            userAnswers = [];
+            
+            showScreen('quiz-screen');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const questionData = currentQuestions[currentIndex];
+            
+            // Aggiorna UI
+            document.getElementById('question-counter').innerText = `Domanda ${currentIndex + 1} di ${TOTAL_QUESTIONS}`;
+            document.getElementById('question-text').innerText = questionData.it.toUpperCase();
+            
+            // Aggiorna Barra
+            const progressPercentage = (currentIndex / TOTAL_QUESTIONS) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercentage}%`;
+            
+            // Prepara Input
+            const inputField = document.getElementById('answer-input');
+            inputField.value = '';
+            inputField.focus();
+        }
+
+        function cleanString(str) {
+            // Rimuove spazi doppi, spazi finali/iniziali e mette in minuscolo
+            return str.toLowerCase().replace(/\s+/g, ' ').trim();
+        }
+
+        function checkAnswer() {
+            const inputField = document.getElementById('answer-input');
+            const userAnswerRaw = inputField.value;
+            
+            // Controllo per non far inserire risposte vuote per sbaglio
+            if(userAnswerRaw.trim() === '') return; 
+
+            const questionData = currentQuestions[currentIndex];
+            
+            const cleanUserAns = cleanString(userAnswerRaw);
+            const cleanCorrectAns = cleanString(questionData.en);
+            
+            // Supporta la formattazione con o senza spazi vicino agli slash
+            const altCorrectAns = cleanCorrectAns.replace(/ \/ /g, '/');
+            const altUserAns = cleanUserAns.replace(/ \/ /g, '/');
+
+            const isCorrect = (cleanUserAns === cleanCorrectAns) || (altUserAns === altCorrectAns);
+            
+            if (isCorrect) score++;
+
+            userAnswers.push({
+                it: questionData.it,
+                en: questionData.en,
+                user: userAnswerRaw,
+                isCorrect: isCorrect
+            });
+
+            currentIndex++;
+
+            if (currentIndex < TOTAL_QUESTIONS) {
+                loadQuestion();
+            } else {
+                endQuiz();
+            }
+        }
+
+        function endQuiz() {
+            // Completa la barra di progresso prima di cambiare schermata
+            document.getElementById('progress-bar').style.width = '100%';
+            
+            setTimeout(() => {
+                showScreen('result-screen');
+                generateResults();
+            }, 300); // Piccolo delay per far vedere la barra piena
+        }
+
+        function generateResults() {
+            // Aggiorna Punteggio
+            document.getElementById('score-display').innerText = `${score}/10`;
+            
+            // Messaggio Voto
+            let voteMsg = "";
+            let color = "";
+            if (score === 10) { voteMsg = "Perfetto! Voto: 10/10 🏆"; color = "#b583ff"; }
+            else if (score >= 8) { voteMsg = `Ottimo lavoro! Voto: ${score} 🌟`; color = "#84dcc6"; }
+            else if (score >= 6) { voteMsg = `Sufficiente. Voto: ${score} 👍`; color = "#ffb347"; }
+            else { voteMsg = `Devi ripassare un po'. Voto: ${score} 📚`; color = "#ff9b9b"; }
+            
+            const msgEl = document.getElementById('vote-message');
+            msgEl.innerText = voteMsg;
+            msgEl.style.color = color;
+            document.getElementById('score-display').style.background = color;
+
+            // Lista Correzioni
+            const listEl = document.getElementById('results-list');
+            listEl.innerHTML = '';
+
+            userAnswers.forEach(ans => {
+                const item = document.createElement('div');
+                item.className = `result-item ${ans.isCorrect ? 'correct' : 'wrong'}`;
+                
+                let content = `<div class="result-it">${ans.it.toUpperCase()}</div>`;
+                
+                if (ans.isCorrect) {
+                    content += `<div class="result-en">✅ ${ans.en}</div>`;
+                } else {
+                    const userTyped = ans.user.trim() === '' ? '(vuoto)' : ans.user;
+                    content += `
+                        <div>
+                            <span class="result-err">${userTyped}</span>
+                            <span class="result-en">👉 ${ans.en}</span>
+                        </div>
+                    `;
+                }
+                
+                item.innerHTML = content;
+                listEl.appendChild(item);
+            });
+        }
+
+        function resetQuiz() {
+            showScreen('start-screen');
+        }
+
+        // Event listener per il tasto Invio
+        document.getElementById('answer-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+    </script>
+</body>
+</html>
