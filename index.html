@@ -77,8 +77,41 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Bottone Custom */
-        button {
+        /* Selettore Modalità */
+        .mode-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .mode-btn {
+            background: rgba(255, 255, 255, 0.5);
+            border: 2px solid transparent;
+            color: var(--text-main);
+            padding: 12px 20px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+        }
+
+        .mode-btn:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: translateY(-1px);
+        }
+
+        .mode-btn.active {
+            background: white;
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 8px 15px rgba(181, 131, 255, 0.15);
+        }
+
+        /* Bottone Principale */
+        .primary-btn {
             background-color: var(--primary);
             color: white;
             border: none;
@@ -93,13 +126,13 @@
             font-family: inherit;
         }
 
-        button:hover {
+        .primary-btn:hover {
             background-color: var(--primary-hover);
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(181, 131, 255, 0.5);
         }
 
-        button:active {
+        .primary-btn:active {
             transform: translateY(1px);
         }
 
@@ -109,7 +142,7 @@
             background-color: #e0e0e0;
             border-radius: 10px;
             height: 8px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             overflow: hidden;
         }
 
@@ -120,11 +153,24 @@
             transition: width 0.3s ease;
         }
 
+        .direction-badge {
+            display: inline-block;
+            background: #f0e6ff;
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
         .question-box {
             background-color: white;
             border: 2px dashed var(--primary);
             border-radius: 20px;
-            padding: 30px 20px;
+            padding: 25px 20px;
             margin-bottom: 30px;
             font-size: 24px;
             font-weight: 700;
@@ -191,25 +237,18 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.03);
         }
 
-        .result-item.correct {
-            border-left-color: var(--correct);
-        }
+        .result-item.correct { border-left-color: var(--correct); }
+        .result-item.wrong { border-left-color: var(--wrong); }
 
-        .result-item.wrong {
-            border-left-color: var(--wrong);
-        }
-
-        .result-it {
+        .result-prompt {
             font-weight: 700;
             margin-bottom: 6px;
             color: var(--text-main);
             font-size: 16px;
         }
 
-        .result-en {
-            color: #1a5e35;
-        }
-
+        .result-expected { color: #1a5e35; }
+        
         .result-err {
             color: #7a1f1f;
             text-decoration: line-through;
@@ -237,11 +276,15 @@
         <!-- START SCREEN -->
         <div id="start-screen" class="screen active">
             <h1>Digital Lives ☁️</h1>
-            <p>Mettiti alla prova con i vocaboli di inglese.<br>Ti verranno proposte <strong>10 parole casuali</strong> in italiano e dovrai scriverle in inglese.</p>
-            <p style="font-size: 14px; color: var(--text-light); font-weight: 600;">
-                Presta attenzione a come sono scritte sul libro!
-            </p>
-            <button onclick="startQuiz()">Inizia il Test ✨</button>
+            <p>Seleziona la modalità e mettiti alla prova sui vocaboli (10 domande).</p>
+            
+            <div class="mode-selector">
+                <button class="mode-btn active" id="mode-it-en" onclick="selectMode('it-en')">🇮🇹 Italiano ➔ 🇬🇧 Inglese</button>
+                <button class="mode-btn" id="mode-en-it" onclick="selectMode('en-it')">🇬🇧 Inglese ➔ 🇮🇹 Italiano</button>
+                <button class="mode-btn" id="mode-mixed" onclick="selectMode('mixed')">🔀 Misto (Casuale)</button>
+            </div>
+
+            <button class="primary-btn" onclick="startQuiz()">Inizia il Test ✨</button>
         </div>
 
         <!-- QUIZ SCREEN -->
@@ -249,7 +292,11 @@
             <div class="progress-container">
                 <div id="progress-bar" class="progress-bar"></div>
             </div>
-            <div id="question-counter" style="color: var(--text-light); font-weight: 600; margin-bottom: 10px;">Domanda 1 di 10</div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div id="question-counter" style="color: var(--text-light); font-weight: 700; font-size: 14px;">Domanda 1 di 10</div>
+                <div id="direction-badge" class="direction-badge">Traduci in 🇬🇧</div>
+            </div>
             
             <div id="question-text" class="question-box">
                 Caricare il telefono
@@ -257,7 +304,7 @@
             
             <input type="text" id="answer-input" placeholder="Scrivi in inglese qui..." autocomplete="off">
             
-            <button onclick="checkAnswer()">Conferma</button>
+            <button class="primary-btn" onclick="checkAnswer()">Conferma</button>
             <div class="hint">Premi 'Invio' per confermare</div>
         </div>
 
@@ -277,13 +324,13 @@
                 <!-- I risultati verranno generati qui via JS -->
             </div>
             
-            <button onclick="resetQuiz()">Riprova 🔄</button>
+            <button class="primary-btn" onclick="resetQuiz()">Riprova 🔄</button>
         </div>
 
     </div>
 
     <script>
-        // Database dei vocaboli aggiornato in base agli appunti a matita
+        // Database dei vocaboli aggiornato
         const vocabolario = [
             // Attività
             { it: "caricare il telefono", en: "charge the battery" },
@@ -292,7 +339,7 @@
             { it: "scaricare una app", en: "download an app" },
             { it: "guardare le indicazioni", en: "get directions" },
             { it: "ascoltare musica/podcast", en: "listen to music and podcasts" },
-            { it: "guardare informazioni", en: "look up information" }, // Corretto
+            { it: "guardare informazioni", en: "look up information" },
             { it: "fare una chiamata", en: "make a phone call" },
             { it: "postare un messaggio/foto/video sui social media", en: "post a message / photo / video on social media" },
             { it: "impostare una sveglia", en: "set an alarm" },
@@ -313,10 +360,18 @@
         ];
 
         const TOTAL_QUESTIONS = 10;
+        let selectedMode = 'it-en'; // default
         let currentQuestions = [];
         let currentIndex = 0;
         let score = 0;
         let userAnswers = [];
+
+        // Gestione Selezione Modalità
+        function selectMode(mode) {
+            selectedMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`mode-${mode}`).classList.add('active');
+        }
 
         // Funzione per mostrare le schermate
         function showScreen(screenId) {
@@ -334,9 +389,16 @@
         }
 
         function startQuiz() {
-            // Prepara le domande
+            // Prepara le domande e assegna a ciascuna la sua direzione (per gestire il "Misto")
             const shuffled = shuffleArray([...vocabolario]);
-            currentQuestions = shuffled.slice(0, TOTAL_QUESTIONS);
+            
+            currentQuestions = shuffled.slice(0, TOTAL_QUESTIONS).map(q => {
+                let qMode = selectedMode;
+                if (selectedMode === 'mixed') {
+                    qMode = Math.random() > 0.5 ? 'it-en' : 'en-it';
+                }
+                return { ...q, mode: qMode };
+            });
             
             // Resetta variabili
             currentIndex = 0;
@@ -350,9 +412,16 @@
         function loadQuestion() {
             const questionData = currentQuestions[currentIndex];
             
+            // Definisci testi in base alla direzione della domanda
+            const isItToEn = questionData.mode === 'it-en';
+            const promptText = isItToEn ? questionData.it : questionData.en;
+            const badgeText = isItToEn ? "Traduci in 🇬🇧" : "Traduci in 🇮🇹";
+            const placeholderText = isItToEn ? "Scrivi in inglese qui..." : "Scrivi in italiano qui...";
+            
             // Aggiorna UI
             document.getElementById('question-counter').innerText = `Domanda ${currentIndex + 1} di ${TOTAL_QUESTIONS}`;
-            document.getElementById('question-text').innerText = questionData.it.toUpperCase();
+            document.getElementById('direction-badge').innerText = badgeText;
+            document.getElementById('question-text').innerText = promptText.toUpperCase();
             
             // Aggiorna Barra
             const progressPercentage = (currentIndex / TOTAL_QUESTIONS) * 100;
@@ -360,12 +429,12 @@
             
             // Prepara Input
             const inputField = document.getElementById('answer-input');
+            inputField.placeholder = placeholderText;
             inputField.value = '';
             inputField.focus();
         }
 
         function cleanString(str) {
-            // Rimuove spazi doppi, spazi finali/iniziali e mette in minuscolo
             return str.toLowerCase().replace(/\s+/g, ' ').trim();
         }
 
@@ -373,15 +442,18 @@
             const inputField = document.getElementById('answer-input');
             const userAnswerRaw = inputField.value;
             
-            // Controllo per non far inserire risposte vuote per sbaglio
             if(userAnswerRaw.trim() === '') return; 
 
             const questionData = currentQuestions[currentIndex];
+            const isItToEn = questionData.mode === 'it-en';
+            
+            // Definisci la risposta corretta attesa in base alla modalità
+            const expectedAnswer = isItToEn ? questionData.en : questionData.it;
+            const promptAsked = isItToEn ? questionData.it : questionData.en;
             
             const cleanUserAns = cleanString(userAnswerRaw);
-            const cleanCorrectAns = cleanString(questionData.en);
+            const cleanCorrectAns = cleanString(expectedAnswer);
             
-            // Supporta la formattazione con o senza spazi vicino agli slash
             const altCorrectAns = cleanCorrectAns.replace(/ \/ /g, '/');
             const altUserAns = cleanUserAns.replace(/ \/ /g, '/');
 
@@ -390,8 +462,9 @@
             if (isCorrect) score++;
 
             userAnswers.push({
-                it: questionData.it,
-                en: questionData.en,
+                mode: questionData.mode,
+                prompt: promptAsked,
+                expected: expectedAnswer,
                 user: userAnswerRaw,
                 isCorrect: isCorrect
             });
@@ -406,20 +479,17 @@
         }
 
         function endQuiz() {
-            // Completa la barra di progresso prima di cambiare schermata
             document.getElementById('progress-bar').style.width = '100%';
             
             setTimeout(() => {
                 showScreen('result-screen');
                 generateResults();
-            }, 300); // Piccolo delay per far vedere la barra piena
+            }, 300); 
         }
 
         function generateResults() {
-            // Aggiorna Punteggio
             document.getElementById('score-display').innerText = `${score}/10`;
             
-            // Messaggio Voto
             let voteMsg = "";
             let color = "";
             if (score === 10) { voteMsg = "Perfetto! Voto: 10/10 🏆"; color = "#b583ff"; }
@@ -432,7 +502,6 @@
             msgEl.style.color = color;
             document.getElementById('score-display').style.background = color;
 
-            // Lista Correzioni
             const listEl = document.getElementById('results-list');
             listEl.innerHTML = '';
 
@@ -440,16 +509,19 @@
                 const item = document.createElement('div');
                 item.className = `result-item ${ans.isCorrect ? 'correct' : 'wrong'}`;
                 
-                let content = `<div class="result-it">${ans.it.toUpperCase()}</div>`;
+                const flagPrompt = ans.mode === 'it-en' ? '🇮🇹' : '🇬🇧';
+                const flagExpected = ans.mode === 'it-en' ? '🇬🇧' : '🇮🇹';
+                
+                let content = `<div class="result-prompt">${flagPrompt} ${ans.prompt.toUpperCase()}</div>`;
                 
                 if (ans.isCorrect) {
-                    content += `<div class="result-en">✅ ${ans.en}</div>`;
+                    content += `<div class="result-expected">✅ ${flagExpected} ${ans.expected}</div>`;
                 } else {
                     const userTyped = ans.user.trim() === '' ? '(vuoto)' : ans.user;
                     content += `
                         <div>
                             <span class="result-err">${userTyped}</span>
-                            <span class="result-en">👉 ${ans.en}</span>
+                            <span class="result-expected">👉 ${flagExpected} ${ans.expected}</span>
                         </div>
                     `;
                 }
