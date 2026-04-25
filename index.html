@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fdf2f8; }
         .fade-in { animation: fadeIn 0.3s ease-out forwards; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -20,37 +20,37 @@
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 text-slate-800">
 
-    <div class="max-w-3xl w-full bg-white rounded-2xl shadow-xl overflow-hidden" id="app-container">
+    <div class="max-w-3xl w-full bg-white rounded-2xl shadow-xl border border-pink-100 overflow-hidden" id="app-container">
         
         <!-- HEADER -->
-        <div class="bg-indigo-700 text-white p-6 text-center shadow-sm">
+        <div class="bg-pink-400 text-white p-6 text-center shadow-sm">
             <h1 class="text-3xl font-semibold tracking-tight"><i class="fas fa-book-open mr-2"></i>English vocabulary</h1>
-            <p class="text-indigo-200 mt-1" id="header-subtitle">Seleziona un'unità per iniziare</p>
+            <p class="text-pink-100 mt-1" id="header-subtitle">Seleziona un'unità per iniziare</p>
         </div>
 
         <!-- SCHERMATA 1: SELEZIONE UNITÀ -->
         <div id="unit-screen" class="p-8 md:p-10 fade-in">
-            <h2 class="text-xl font-semibold text-center mb-6">Menu principale</h2>
+            <h2 class="text-xl font-semibold text-center text-slate-700 mb-6">Menu principale</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
-                <button onclick="selectUnit('Unit 2')" class="bg-white border border-slate-200 hover:border-indigo-500 hover:shadow-md p-6 rounded-xl transition-all text-left group">
-                    <span class="block text-sm text-indigo-600 font-bold mb-1">Unit 2</span>
-                    <span class="block text-lg font-semibold text-slate-700 group-hover:text-indigo-700">Around town</span>
+                <button onclick="selectUnit('Unit 2')" class="bg-white border-2 border-pink-100 hover:border-pink-300 hover:shadow-md p-6 rounded-xl transition-all text-left group">
+                    <span class="block text-sm text-pink-500 font-bold mb-1">Unit 2</span>
+                    <span class="block text-lg font-semibold text-slate-700 group-hover:text-pink-600">Around town</span>
                 </button>
-                <button onclick="selectUnit('Unit 3')" class="bg-white border border-slate-200 hover:border-indigo-500 hover:shadow-md p-6 rounded-xl transition-all text-left group">
-                    <span class="block text-sm text-indigo-600 font-bold mb-1">Unit 3</span>
-                    <span class="block text-lg font-semibold text-slate-700 group-hover:text-indigo-700">Our digital lives</span>
+                <button onclick="selectUnit('Unit 3')" class="bg-white border-2 border-pink-100 hover:border-pink-300 hover:shadow-md p-6 rounded-xl transition-all text-left group">
+                    <span class="block text-sm text-pink-500 font-bold mb-1">Unit 3</span>
+                    <span class="block text-lg font-semibold text-slate-700 group-hover:text-pink-600">Our digital lives</span>
                 </button>
-                <button onclick="selectUnit('Unit 4')" class="bg-white border border-slate-200 hover:border-indigo-500 hover:shadow-md p-6 rounded-xl transition-all text-left group">
-                    <span class="block text-sm text-indigo-600 font-bold mb-1">Unit 4</span>
-                    <span class="block text-lg font-semibold text-slate-700 group-hover:text-indigo-700">At the movies</span>
+                <button onclick="selectUnit('Unit 4')" class="bg-white border-2 border-pink-100 hover:border-pink-300 hover:shadow-md p-6 rounded-xl transition-all text-left group">
+                    <span class="block text-sm text-pink-500 font-bold mb-1">Unit 4</span>
+                    <span class="block text-lg font-semibold text-slate-700 group-hover:text-pink-600">At the movies</span>
                 </button>
-                <button onclick="selectUnit('Unit 5')" class="bg-white border border-slate-200 hover:border-indigo-500 hover:shadow-md p-6 rounded-xl transition-all text-left group">
-                    <span class="block text-sm text-indigo-600 font-bold mb-1">Unit 5</span>
-                    <span class="block text-lg font-semibold text-slate-700 group-hover:text-indigo-700">Let's eat!</span>
+                <button onclick="selectUnit('Unit 5')" class="bg-white border-2 border-pink-100 hover:border-pink-300 hover:shadow-md p-6 rounded-xl transition-all text-left group">
+                    <span class="block text-sm text-pink-500 font-bold mb-1">Unit 5</span>
+                    <span class="block text-lg font-semibold text-slate-700 group-hover:text-pink-600">Let's eat!</span>
                 </button>
             </div>
             <div class="mt-4 max-w-2xl mx-auto">
-                <button onclick="selectUnit('All')" class="w-full bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 p-4 rounded-xl transition-all text-center font-semibold text-indigo-800">
+                <button onclick="selectUnit('All')" class="w-full bg-pink-50 border-2 border-pink-200 hover:bg-pink-100 hover:border-pink-300 p-4 rounded-xl transition-all text-center font-semibold text-pink-800 shadow-sm">
                     <i class="fas fa-layer-group mr-2"></i>Test globale (tutte le unità)
                 </button>
             </div>
@@ -58,21 +58,21 @@
 
         <!-- SCHERMATA 2: SELEZIONE LUNGHEZZA -->
         <div id="setup-screen" class="p-8 md:p-12 text-center hidden fade-in">
-            <button onclick="goBackToUnits()" class="text-slate-500 hover:text-indigo-600 font-semibold mb-6 flex items-center justify-center mx-auto transition-colors">
+            <button onclick="goBackToUnits()" class="text-slate-400 hover:text-pink-500 font-semibold mb-6 flex items-center justify-center mx-auto transition-colors">
                 <i class="fas fa-arrow-left mr-2"></i> Torna alle unità
             </button>
             
-            <h2 class="text-2xl font-semibold mb-2">Imposta la verifica</h2>
-            <p class="text-slate-600 mb-8" id="selected-unit-label">Unità selezionata</p>
+            <h2 class="text-2xl font-semibold text-slate-700 mb-2">Imposta la verifica</h2>
+            <p class="text-pink-600 font-medium mb-8" id="selected-unit-label">Unità selezionata</p>
             
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-lg mx-auto">
-                <button onclick="startTest(10)" class="bg-white border-2 border-slate-200 hover:border-indigo-400 text-slate-700 font-semibold py-4 px-6 rounded-xl transition-all shadow-sm">
+                <button onclick="startTest(10)" class="bg-white border-2 border-pink-200 hover:border-pink-400 text-slate-600 hover:text-pink-600 font-semibold py-4 px-6 rounded-xl transition-all shadow-sm">
                     10 parole
                 </button>
-                <button onclick="startTest(20)" class="bg-white border-2 border-slate-200 hover:border-indigo-400 text-slate-700 font-semibold py-4 px-6 rounded-xl transition-all shadow-sm">
+                <button onclick="startTest(20)" class="bg-white border-2 border-pink-200 hover:border-pink-400 text-slate-600 hover:text-pink-600 font-semibold py-4 px-6 rounded-xl transition-all shadow-sm">
                     20 parole
                 </button>
-                <button onclick="startTest('all')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 px-6 rounded-xl transition-all shadow-md">
+                <button onclick="startTest('all')" class="bg-pink-400 hover:bg-pink-500 text-white font-semibold py-4 px-6 rounded-xl transition-all shadow-md">
                     Tutte (<span id="total-words-count">0</span>)
                 </button>
             </div>
@@ -81,33 +81,33 @@
         <!-- SCHERMATA 3: QUIZ -->
         <div id="quiz-screen" class="p-8 md:p-10 hidden fade-in">
             <div class="mb-6">
-                <div class="flex justify-between text-sm font-semibold text-slate-500 mb-2">
+                <div class="flex justify-between text-sm font-semibold text-pink-400 mb-2">
                     <span id="question-counter">Domanda 1 / 10</span>
-                    <span id="progress-text" class="text-indigo-600">0%</span>
+                    <span id="progress-text" class="text-pink-500">0%</span>
                 </div>
-                <div class="w-full bg-slate-200 rounded-full h-2">
-                    <div id="progress-bar" class="bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                <div class="w-full bg-pink-100 rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-pink-400 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
                 </div>
             </div>
 
-            <div class="bg-slate-50 rounded-xl p-8 mb-6 text-center border border-slate-200">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Traduci in inglese</p>
-                <h3 class="text-3xl font-bold text-slate-800" id="italian-word">parola</h3>
+            <div class="bg-pink-50 rounded-xl p-8 mb-6 text-center border border-pink-100 shadow-inner">
+                <p class="text-xs font-bold text-pink-400 uppercase tracking-wider mb-2">Traduci in inglese</p>
+                <h3 class="text-3xl font-bold text-slate-700" id="italian-word">parola</h3>
             </div>
 
             <div class="mb-6">
-                <input type="text" id="english-input" class="w-full text-center text-xl p-4 border-2 border-slate-300 rounded-xl focus:outline-none focus:border-indigo-500 transition-all font-medium text-slate-700 placeholder-slate-300" placeholder="Scrivi qui..." autocomplete="off">
+                <input type="text" id="english-input" class="w-full text-center text-xl p-4 border-2 border-pink-200 rounded-xl focus:outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-50 transition-all font-medium text-slate-700 placeholder-pink-200" placeholder="Scrivi qui..." autocomplete="off">
             </div>
 
-            <button onclick="submitAnswer()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 px-6 rounded-xl shadow-md transition-all text-lg flex items-center justify-center gap-2" id="submit-btn">
+            <button onclick="submitAnswer()" class="w-full bg-pink-400 hover:bg-pink-500 text-white font-semibold py-4 px-6 rounded-xl shadow-md transition-all text-lg flex items-center justify-center gap-2" id="submit-btn">
                 <span>Conferma</span> <i class="fas fa-arrow-right"></i>
             </button>
         </div>
 
         <!-- SCHERMATA 4: RISULTATI -->
-        <div id="results-screen" class="hidden fade-in bg-slate-50">
-            <div class="p-8 text-center border-b border-slate-200 bg-white">
-                <h2 class="text-2xl font-semibold text-slate-800 mb-1">Esito della verifica</h2>
+        <div id="results-screen" class="hidden fade-in bg-[#fdf2f8]">
+            <div class="p-8 text-center border-b border-pink-100 bg-white">
+                <h2 class="text-2xl font-semibold text-slate-700 mb-1">Esito della verifica</h2>
                 <div class="text-5xl font-bold my-4" id="final-score">0/0</div>
                 <p class="text-lg font-medium" id="feedback-message">Valutazione...</p>
             </div>
@@ -118,11 +118,11 @@
                 </div>
             </div>
 
-            <div class="p-6 text-center bg-white border-t border-slate-200 flex flex-col sm:flex-row justify-center gap-4">
-                <button onclick="retrySameTest()" class="bg-white border-2 border-indigo-600 text-indigo-700 hover:bg-indigo-50 font-semibold py-3 px-6 rounded-xl transition-all">
+            <div class="p-6 text-center bg-white border-t border-pink-100 flex flex-col sm:flex-row justify-center gap-4">
+                <button onclick="retrySameTest()" class="bg-white border-2 border-pink-400 text-pink-500 hover:bg-pink-50 font-semibold py-3 px-6 rounded-xl transition-all shadow-sm">
                     <i class="fas fa-redo mr-2"></i> Ripeti questo test
                 </button>
-                <button onclick="location.reload()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition-all shadow-md">
+                <button onclick="location.reload()" class="bg-pink-400 hover:bg-pink-500 text-white font-semibold py-3 px-6 rounded-xl transition-all shadow-md">
                     <i class="fas fa-home mr-2"></i> Menu principale
                 </button>
             </div>
@@ -131,7 +131,7 @@
     </div>
 
     <script>
-        // Database completo suddiviso per unità, fedele agli appunti
+        // Database completo suddiviso per unità
         const database = [
             // UNIT 2
             { unit: "Unit 2", it: "panetteria", en: "baker's" },
@@ -196,7 +196,7 @@
             { unit: "Unit 3", it: "assistente vocale", en: "voice assistant" },
             { unit: "Unit 3", it: "fotocamera", en: "webcam" },
             { unit: "Unit 3", it: "cercare (phrasal verb)", en: "look up" },
-            { unit: "una telefonata", en: "a phone call" },
+            { unit: "Unit 3", it: "una telefonata", en: "a phone call" },
             { unit: "Unit 3", it: "una sveglia", en: "an alarm" },
             { unit: "Unit 3", it: "sui social media", en: "on social media" },
             { unit: "Unit 3", it: "indicazioni stradali", en: "directions" },
@@ -353,7 +353,7 @@
 
         // 2. Avvio del test
         function startTest(numQuestions) {
-            selectedLength = numQuestions; // Salvo per il tasto "Ripeti"
+            selectedLength = numQuestions; 
             let shuffled = shuffleArray([...filteredWords]);
             
             if (numQuestions === 'all') {
@@ -391,10 +391,10 @@
             let btn = document.getElementById('submit-btn');
             if (currentIndex === currentQuiz.length - 1) {
                 btn.innerHTML = `<span>Correggi il test</span> <i class="fas fa-check"></i>`;
-                btn.className = "w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded-xl shadow-md transition-all text-lg flex items-center justify-center gap-2";
+                btn.className = "w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-4 px-6 rounded-xl shadow-md transition-all text-lg flex items-center justify-center gap-2";
             } else {
                 btn.innerHTML = `<span>Conferma</span> <i class="fas fa-arrow-right"></i>`;
-                btn.className = "w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 px-6 rounded-xl shadow-md transition-all text-lg flex items-center justify-center gap-2";
+                btn.className = "w-full bg-pink-400 hover:bg-pink-500 text-white font-semibold py-4 px-6 rounded-xl shadow-md transition-all text-lg flex items-center justify-center gap-2";
             }
         }
 
@@ -433,9 +433,9 @@
             finalScoreLabel.innerText = `${correctCount}/${total}`;
 
             if (percentage === 100) {
-                finalScoreLabel.className = "text-5xl font-bold my-4 text-green-600";
+                finalScoreLabel.className = "text-5xl font-bold my-4 text-green-500";
                 feedbackMessage.innerText = "Ottimo lavoro! Nessun errore.";
-                feedbackMessage.className = "text-lg font-medium text-green-700";
+                feedbackMessage.className = "text-lg font-medium text-green-600";
             } else if (percentage >= 60) {
                 finalScoreLabel.className = "text-5xl font-bold my-4 text-amber-500";
                 feedbackMessage.innerText = "Sufficiente, ma controlla le correzioni.";
@@ -459,7 +459,7 @@
                     div.className = "correct-answer-card bg-white p-4 rounded-lg shadow-sm border border-slate-100";
                     div.innerHTML = `
                         <p class="font-semibold text-slate-700 mb-1">${index + 1}. ${item.question.it}</p>
-                        <p class="text-green-600 text-sm font-semibold"><i class="fas fa-check mr-1"></i> ${item.question.en}</p>
+                        <p class="text-green-500 text-sm font-semibold"><i class="fas fa-check mr-1"></i> ${item.question.en}</p>
                     `;
                 } else {
                     div.className = "wrong-answer-card bg-white p-4 rounded-lg shadow-sm border border-slate-100";
@@ -469,11 +469,11 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                             <div class="bg-red-50 p-2 rounded">
                                 <span class="text-red-400 text-xs uppercase block mb-1">Tua risposta</span>
-                                <span class="text-red-600 line-through">${userTyped}</span>
+                                <span class="text-red-500 line-through">${userTyped}</span>
                             </div>
                             <div class="bg-green-50 p-2 rounded">
                                 <span class="text-green-500 text-xs uppercase block mb-1">Corretta</span>
-                                <span class="text-green-700 font-bold">${item.question.en}</span>
+                                <span class="text-green-600 font-bold">${item.question.en}</span>
                             </div>
                         </div>
                     `;
