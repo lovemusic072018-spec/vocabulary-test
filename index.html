@@ -4,486 +4,525 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Vocab Trainer</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>English Vocabulary Test 📚</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fdf2f8; }
-        .fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        :root {
+            --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-main: #2c3e50;
+            --text-light: #7f8c8d;
+            --primary: #3498db;
+            --primary-hover: #2980b9;
+            --correct: #2ecc71;
+            --wrong: #e74c3c;
+            --accent: #9b59b6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+            padding: 20px;
+        }
+
+        .app-container {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 35px;
+            width: 100%;
+            max-width: 550px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        p {
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            color: var(--text-light);
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .correct-answer-card { border-left: 5px solid #10b981; }
-        .wrong-answer-card { border-left: 5px solid #ef4444; }
+
+        /* Selettori */
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-main);
+            text-align: left;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .grid-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .mode-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .select-btn {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            color: var(--text-light);
+            padding: 12px 15px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .select-btn:hover {
+            background: #e9ecef;
+        }
+
+        .select-btn.active {
+            background: rgba(52, 152, 219, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .primary-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .primary-btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        /* UI Quiz */
+        .progress-container {
+            width: 100%;
+            background-color: #ecf0f1;
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .header-quiz {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .q-counter {
+            color: var(--text-light);
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .direction-badge {
+            background: rgba(155, 89, 182, 0.1);
+            color: var(--accent);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .question-box {
+            background-color: white;
+            border: 2px dashed #bdc3c7;
+            border-radius: 16px;
+            padding: 25px 20px;
+            margin-bottom: 25px;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid #bdc3c7;
+            border-radius: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+            text-align: center;
+            color: var(--text-main);
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+        }
+
+        /* Risultati */
+        .score-circle {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            font-weight: 700;
+            margin: 0 auto 15px auto;
+        }
+
+        .vote-text {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+        .results-list {
+            max-height: 350px;
+            overflow-y: auto;
+            margin-bottom: 25px;
+            text-align: left;
+            padding-right: 5px;
+        }
+
+        .result-item {
+            padding: 15px;
+            border-radius: 14px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            background: #f8f9fa;
+            border-left: 5px solid #ccc;
+        }
+
+        .result-item.correct { border-left-color: var(--correct); }
+        .result-item.wrong { border-left-color: var(--wrong); }
+
+        .result-prompt {
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--text-main);
+        }
+
+        .result-expected { color: var(--correct); font-weight: 600; }
+        .result-err { color: var(--wrong); text-decoration: line-through; margin-right: 8px; font-size: 13px; }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #bdc3c7; border-radius: 10px; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 text-slate-800">
+<body>
 
-    <div class="max-w-3xl w-full bg-white rounded-2xl shadow-xl border border-pink-100 overflow-hidden" id="app-container">
+    <div class="app-container">
         
-        <!-- HEADER -->
-        <div class="bg-pink-400 text-white p-6 text-center shadow-sm">
-            <h1 class="text-3xl font-semibold tracking-tight"><i class="fas fa-book-open mr-2"></i>English vocabulary</h1>
-            <p class="text-pink-100 mt-1" id="header-subtitle">Seleziona un'unità per iniziare</p>
-        </div>
-
-        <!-- SCHERMATA 1: SELEZIONE UNITÀ -->
-        <div id="unit-screen" class="p-8 md:p-10 fade-in">
-            <h2 class="text-xl font-semibold text-center text-slate-700 mb-6">Menu principale</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
-                <button onclick="selectUnit('Unit 2')" class="bg-white border-2 border-pink-100 hover:border-pink-300 hover:shadow-md p-6 rounded-xl transition-all text-left group">
-                    <span class="block text-sm text-pink-500 font-bold mb-1">Unit 2</span>
-                    <span class="block text-lg font-semibold text-slate-700 group-hover:text-pink-600">Around town</span>
-                </button>
-                <button onclick="selectUnit('Unit 3')" class="bg-white border-2 border-pink-100 hover:border-pink-300 hover:shadow-md p-6 rounded-xl transition-all text-left group">
-                    <span class="block text-sm text-pink-500 font-bold mb-1">Unit 3</span>
-                    <span class="block text-lg font-semibold text-slate-700 group-hover:text-pink-600">Our digital lives</span>
-                </button>
-                <button onclick="selectUnit('Unit 4')" class="bg-white border-2 border-pink-100 hover:border-pink-300 hover:shadow-md p-6 rounded-xl transition-all text-left group">
-                    <span class="block text-sm text-pink-500 font-bold mb-1">Unit 4</span>
-                    <span class="block text-lg font-semibold text-slate-700 group-hover:text-pink-600">At the movies</span>
-                </button>
-                <button onclick="selectUnit('Unit 5')" class="bg-white border-2 border-pink-100 hover:border-pink-300 hover:shadow-md p-6 rounded-xl transition-all text-left group">
-                    <span class="block text-sm text-pink-500 font-bold mb-1">Unit 5</span>
-                    <span class="block text-lg font-semibold text-slate-700 group-hover:text-pink-600">Let's eat!</span>
-                </button>
-            </div>
-            <div class="mt-4 max-w-2xl mx-auto">
-                <button onclick="selectUnit('All')" class="w-full bg-pink-50 border-2 border-pink-200 hover:bg-pink-100 hover:border-pink-300 p-4 rounded-xl transition-all text-center font-semibold text-pink-800 shadow-sm">
-                    <i class="fas fa-layer-group mr-2"></i>Test globale (tutte le unità)
-                </button>
-            </div>
-        </div>
-
-        <!-- SCHERMATA 2: SELEZIONE LUNGHEZZA -->
-        <div id="setup-screen" class="p-8 md:p-12 text-center hidden fade-in">
-            <button onclick="goBackToUnits()" class="text-slate-400 hover:text-pink-500 font-semibold mb-6 flex items-center justify-center mx-auto transition-colors">
-                <i class="fas fa-arrow-left mr-2"></i> Torna alle unità
-            </button>
+        <!-- START SCREEN -->
+        <div id="start-screen" class="screen active">
+            <h1>Vocabulary Test 📚</h1>
+            <p>Seleziona l'unità e la modalità per iniziare l'esercitazione.</p>
             
-            <h2 class="text-2xl font-semibold text-slate-700 mb-2">Imposta la verifica</h2>
-            <p class="text-pink-600 font-medium mb-8" id="selected-unit-label">Unità selezionata</p>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-lg mx-auto">
-                <button onclick="startTest(10)" class="bg-white border-2 border-pink-200 hover:border-pink-400 text-slate-600 hover:text-pink-600 font-semibold py-4 px-6 rounded-xl transition-all shadow-sm">
-                    10 parole
-                </button>
-                <button onclick="startTest(20)" class="bg-white border-2 border-pink-200 hover:border-pink-400 text-slate-600 hover:text-pink-600 font-semibold py-4 px-6 rounded-xl transition-all shadow-sm">
-                    20 parole
-                </button>
-                <button onclick="startTest('all')" class="bg-pink-400 hover:bg-pink-500 text-white font-semibold py-4 px-6 rounded-xl transition-all shadow-md">
-                    Tutte (<span id="total-words-count">0</span>)
-                </button>
+            <div class="section-title">1. Scegli l'unità</div>
+            <div class="grid-selector">
+                <button class="select-btn unit-btn" data-unit="unit2" onclick="selectUnit('unit2')">Unit 2: Around Town</button>
+                <button class="select-btn unit-btn" data-unit="unit3" onclick="selectUnit('unit3')">Unit 3: Digital Lives</button>
+                <button class="select-btn unit-btn" data-unit="unit4" onclick="selectUnit('unit4')">Unit 4: At the Movies</button>
+                <button class="select-btn unit-btn" data-unit="unit5" onclick="selectUnit('unit5')">Unit 5: Let's Eat</button>
+                <button class="select-btn unit-btn active" data-unit="all" onclick="selectUnit('all')" style="grid-column: span 2;">Tutte le Unità (Mix)</button>
             </div>
+
+            <div class="section-title">2. Scegli la direzione</div>
+            <div class="mode-selector">
+                <button class="select-btn mode-btn active" data-mode="it-en" onclick="selectMode('it-en')">🇮🇹 Italiano ➔ 🇬🇧 Inglese</button>
+                <button class="select-btn mode-btn" data-mode="en-it" onclick="selectMode('en-it')">🇬🇧 Inglese ➔ 🇮🇹 Italiano</button>
+                <button class="select-btn mode-btn" data-mode="mixed" onclick="selectMode('mixed')">🔀 Misto (Casuale)</button>
+            </div>
+
+            <button class="primary-btn" onclick="startQuiz()">Avvia Test</button>
         </div>
 
-        <!-- SCHERMATA 3: QUIZ -->
-        <div id="quiz-screen" class="p-8 md:p-10 hidden fade-in">
-            <div class="mb-6">
-                <div class="flex justify-between text-sm font-semibold text-pink-400 mb-2">
-                    <span id="question-counter">Domanda 1 / 10</span>
-                    <span id="progress-text" class="text-pink-500">0%</span>
-                </div>
-                <div class="w-full bg-pink-100 rounded-full h-2.5">
-                    <div id="progress-bar" class="bg-pink-400 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
-                </div>
-            </div>
-
-            <div class="bg-pink-50 rounded-xl p-8 mb-6 text-center border border-pink-100 shadow-inner">
-                <p class="text-xs font-bold text-pink-400 uppercase tracking-wider mb-2">Traduci in inglese</p>
-                <h3 class="text-3xl font-bold text-slate-700" id="italian-word">parola</h3>
-            </div>
-
-            <div class="mb-6">
-                <input type="text" id="english-input" class="w-full text-center text-xl p-4 border-2 border-pink-200 rounded-xl focus:outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-50 transition-all font-medium text-slate-700 placeholder-pink-200" placeholder="Scrivi qui..." autocomplete="off">
-            </div>
-
-            <button onclick="submitAnswer()" class="w-full bg-pink-400 hover:bg-pink-500 text-white font-semibold py-4 px-6 rounded-xl shadow-md transition-all text-lg flex items-center justify-center gap-2" id="submit-btn">
-                <span>Conferma</span> <i class="fas fa-arrow-right"></i>
-            </button>
-        </div>
-
-        <!-- SCHERMATA 4: RISULTATI -->
-        <div id="results-screen" class="hidden fade-in bg-[#fdf2f8]">
-            <div class="p-8 text-center border-b border-pink-100 bg-white">
-                <h2 class="text-2xl font-semibold text-slate-700 mb-1">Esito della verifica</h2>
-                <div class="text-5xl font-bold my-4" id="final-score">0/0</div>
-                <p class="text-lg font-medium" id="feedback-message">Valutazione...</p>
+        <!-- QUIZ SCREEN -->
+        <div id="quiz-screen" class="screen">
+            <div class="progress-container">
+                <div id="progress-bar" class="progress-bar"></div>
             </div>
             
-            <div class="p-6 md:p-8 max-h-[500px] overflow-y-auto">
-                <div class="space-y-3" id="corrections-list">
-                    <!-- Generato da JS -->
-                </div>
+            <div class="header-quiz">
+                <div id="question-counter" class="q-counter">Domanda 1/10</div>
+                <div id="direction-badge" class="direction-badge">Traduci in 🇬🇧</div>
             </div>
+            
+            <div id="question-text" class="question-box"></div>
+            
+            <input type="text" id="answer-input" autocomplete="off">
+            
+            <button class="primary-btn" onclick="checkAnswer()">Conferma</button>
+            <div style="font-size: 12px; color: var(--text-light); margin-top: 12px;">Premi 'Invio' per confermare</div>
+        </div>
 
-            <div class="p-6 text-center bg-white border-t border-pink-100 flex flex-col sm:flex-row justify-center gap-4">
-                <button onclick="retrySameTest()" class="bg-white border-2 border-pink-400 text-pink-500 hover:bg-pink-50 font-semibold py-3 px-6 rounded-xl transition-all shadow-sm">
-                    <i class="fas fa-redo mr-2"></i> Ripeti questo test
-                </button>
-                <button onclick="location.reload()" class="bg-pink-400 hover:bg-pink-500 text-white font-semibold py-3 px-6 rounded-xl transition-all shadow-md">
-                    <i class="fas fa-home mr-2"></i> Menu principale
-                </button>
-            </div>
+        <!-- RESULT SCREEN -->
+        <div id="result-screen" class="screen">
+            <h1>Risultati 🎉</h1>
+            <div class="score-circle" id="score-display">0/10</div>
+            <div id="vote-message" class="vote-text"></div>
+            <div class="results-list" id="results-list"></div>
+            <button class="primary-btn" onclick="resetQuiz()">Torna alla Home</button>
         </div>
 
     </div>
 
     <script>
-        // Database completo suddiviso per unità
-        const database = [
-            // UNIT 2
-            { unit: "Unit 2", it: "panetteria", en: "baker's" },
-            { unit: "Unit 2", it: "banca", en: "bank" },
-            { unit: "Unit 2", it: "stazione dei bus", en: "bus station" },
-            { unit: "Unit 2", it: "fermata del bus", en: "bus stop" },
-            { unit: "Unit 2", it: "caffetteria", en: "café" },
-            { unit: "Unit 2", it: "caritas", en: "charity shop" },
-            { unit: "Unit 2", it: "negozio di parrucchiere/a", en: "hairdresser's" },
-            { unit: "Unit 2", it: "ospedale", en: "hospital" },
-            { unit: "Unit 2", it: "edicola", en: "newsagent's" },
-            { unit: "Unit 2", it: "stazione di servizio", en: "petrol station" },
-            { unit: "Unit 2", it: "stazione di polizia", en: "police station" },
-            { unit: "Unit 2", it: "ufficio postale", en: "post office" },
-            { unit: "Unit 2", it: "centro commerciale", en: "shopping centre" },
-            { unit: "Unit 2", it: "centro sportivo", en: "sports centre" },
-            { unit: "Unit 2", it: "supermercato", en: "supermarket" },
-            { unit: "Unit 2", it: "stazione dei treni", en: "train station" },
-            { unit: "Unit 2", it: "galleria d'arte", en: "art gallery" },
-            { unit: "Unit 2", it: "libreria", en: "bookshop" },
-            { unit: "Unit 2", it: "parcheggio", en: "car park" },
-            { unit: "Unit 2", it: "farmacia", en: "chemist's" },
-            { unit: "Unit 2", it: "chiesa", en: "church" },
-            { unit: "Unit 2", it: "biblioteca", en: "library" },
-            { unit: "Unit 2", it: "mercato", en: "market" },
-            { unit: "Unit 2", it: "museo", en: "museum" },
-            { unit: "Unit 2", it: "ristorante", en: "restaurant" },
-            { unit: "Unit 2", it: "skatepark", en: "skatepark" },
-            { unit: "Unit 2", it: "piazza", en: "square" },
-            { unit: "Unit 2", it: "teatro", en: "theatre" },
-            { unit: "Unit 2", it: "barca", en: "boat" },
-            { unit: "Unit 2", it: "bus", en: "bus" },
-            { unit: "Unit 2", it: "macchina", en: "car" },
-            { unit: "Unit 2", it: "bus/pullman", en: "coach" },
-            { unit: "Unit 2", it: "moto", en: "motorbike" },
-            { unit: "Unit 2", it: "aereo", en: "plane" },
-            { unit: "Unit 2", it: "treno", en: "train" },
-            { unit: "Unit 2", it: "scooter", en: "scooter" },
-            { unit: "Unit 2", it: "metro", en: "underground" },
+        // Database dei vocaboli suddiviso per unità
+        const db = {
+            unit2: [
+                { en: "baker's", it: "panetteria" },
+                { en: "bank", it: "banca" },
+                { en: "bus station", it: "stazione del bus" },
+                { en: "bus stop", it: "fermata del bus" },
+                { en: "café", it: "caffetteria" },
+                { en: "charity shop", it: "caritas" },
+                { en: "hairdresser's", it: "negozio di parrucchiere/a" },
+                { en: "hospital", it: "ospedale" },
+                { en: "newsagent's", it: "edicola" },
+                { en: "petrol station", it: "stazione di servizio" },
+                { en: "police station", it: "stazione di polizia" },
+                { en: "post office", it: "ufficio postale" },
+                { en: "shopping centre", it: "centro commerciale" },
+                { en: "sports centre", it: "centro sportivo" },
+                { en: "supermarket", it: "supermercato" },
+                { en: "train station", it: "stazione dei treni" },
+                { en: "art gallery", it: "galleria d'arte" },
+                { en: "bookshop", it: "libreria" },
+                { en: "car park", it: "parcheggio" },
+                { en: "chemist's", it: "farmacia" },
+                { en: "church", it: "chiesa" },
+                { en: "library", it: "biblioteca" },
+                { en: "market", it: "mercato" },
+                { en: "museum", it: "museo" },
+                { en: "restaurant", it: "ristorante" },
+                { en: "skatepark", it: "skatepark" },
+                { en: "square", it: "piazza" },
+                { en: "theatre", it: "teatro" },
+                { en: "boat", it: "barca" },
+                { en: "bus", it: "bus" },
+                { en: "car", it: "macchina" },
+                { en: "coach", it: "bus / pullman" },
+                { en: "motorbike", it: "moto" },
+                { en: "plane", it: "aereo" },
+                { en: "train", it: "treno" },
+                { en: "scooter", it: "scooter" },
+                { en: "underground", it: "metro" }
+            ],
+            unit3: [
+                { en: "charge the battery", it: "caricare il telefono" },
+                { en: "chat to friends", it: "scrivere agli amici" },
+                { en: "check the weather forecast", it: "guardare il meteo" },
+                { en: "download an app", it: "scaricare una app" },
+                { en: "get directions", it: "guardare le indicazioni" },
+                { en: "listen to music and podcasts", it: "ascoltare musica/podcast" },
+                { en: "look up information", it: "guardare informazioni" },
+                { en: "make a phone call", it: "fare una chiamata" },
+                { en: "post a message / photo / video on social media", it: "postare un messaggio / foto / video sui social media" },
+                { en: "set an alarm", it: "impostare una sveglia" },
+                { en: "take a photo", it: "fare una foto" },
+                { en: "watch a video", it: "guardare un video" },
+                { en: "cable", it: "cavo" },
+                { en: "keyboard", it: "tastiera" },
+                { en: "mouse", it: "mouse" },
+                { en: "portable charger", it: "caricatore portatile" },
+                { en: "printer", it: "stampante" },
+                { en: "screen", it: "schermo" },
+                { en: "speakers", it: "casse" },
+                { en: "USB key", it: "chiavetta USB" },
+                { en: "voice assistant", it: "assistente vocale" },
+                { en: "webcam", it: "fotocamera" }
+            ],
+            unit4: [
+                { en: "action film", it: "film d'azione" },
+                { en: "animated film", it: "film animato" },
+                { en: "comedy", it: "commedia" },
+                { en: "fantasy film", it: "film di fantasia" },
+                { en: "horror film", it: "film horror" },
+                { en: "love story", it: "storia romantica" },
+                { en: "musical", it: "musical" },
+                { en: "rom-com", it: "commedia romantica" },
+                { en: "science-fiction film", it: "film di fantascienza" },
+                { en: "superhero film", it: "supereroi" },
+                { en: "thriller", it: "thriller" },
+                { en: "war film", it: "film di guerra" },
+                { en: "cartoon", it: "cartone animato" },
+                { en: "chat show", it: "talk show" },
+                { en: "documentary", it: "documentario" },
+                { en: "drama", it: "drammatico" },
+                { en: "quiz show", it: "quiz" },
+                { en: "reality show", it: "reality" },
+                { en: "sitcom", it: "sitcom" },
+                { en: "soap", it: "soap" },
+                { en: "sports programme", it: "programma sportivo" },
+                { en: "talent show", it: "talent" },
+                { en: "the news", it: "tg" },
+                { en: "TV series", it: "serie tv" }
+            ],
+            unit5: [
+                { en: "apples", it: "mele" },
+                { en: "bananas", it: "banane" },
+                { en: "bread", it: "pane" },
+                { en: "burgers", it: "hamburger" },
+                { en: "carrots", it: "carote" },
+                { en: "cheese", it: "formaggio" },
+                { en: "chicken", it: "pollo" },
+                { en: "chocolate", it: "cioccolato" },
+                { en: "eggs", it: "uova" },
+                { en: "grapes", it: "uva" },
+                { en: "ham", it: "prosciutto" },
+                { en: "mayonnaise", it: "maionese" },
+                { en: "onions", it: "cipolle" },
+                { en: "oranges", it: "arance" },
+                { en: "pasta", it: "pasta" },
+                { en: "peas", it: "piselli" },
+                { en: "potatoes", it: "patate" },
+                { en: "rice", it: "riso" },
+                { en: "salmon", it: "salmone" },
+                { en: "sandwiches", it: "tramezzini" },
+                { en: "sausages", it: "salsicce" },
+                { en: "tomatoes", it: "pomodori" },
+                { en: "biscuits", it: "biscotti" },
+                { en: "butter", it: "burro" },
+                { en: "cake", it: "torta" },
+                { en: "cereal", it: "cereali" },
+                { en: "chips", it: "patatine fritte" },
+                { en: "crisps", it: "patatine (in busta)" },
+                { en: "honey", it: "miele" },
+                { en: "ice-cream", it: "gelato" },
+                { en: "jam", it: "marmellata" },
+                { en: "melon", it: "melone" },
+                { en: "mushrooms", it: "funghi" },
+                { en: "oil and vinegar", it: "olio e aceto" },
+                { en: "salt and pepper", it: "sale e pepe" },
+                { en: "strawberries", it: "fragole" },
+                { en: "sugar", it: "zucchero" },
+                { en: "sweets", it: "dolci" },
+                { en: "toast", it: "pane tostato" },
+                { en: "tuna", it: "tonno" },
+                { en: "yoghurt", it: "yogurt" },
+                { en: "cola", it: "coca cola" },
+                { en: "milk", it: "latte" },
+                { en: "orange juice", it: "succo d'arancia" },
+                { en: "water", it: "acqua" },
+                { en: "coffee", it: "caffè" },
+                { en: "lemonade", it: "gazzosa" },
+                { en: "tea", it: "tè" },
+                { en: "a bottle of", it: "una bottiglia di" },
+                { en: "a bowl of", it: "una ciotola di" },
+                { en: "a cup of", it: "una tazza di" },
+                { en: "a packet of", it: "un pacchetto di" },
+                { en: "a slice of", it: "una fetta di" },
+                { en: "a tin of", it: "una lattina di" }
+            ]
+        };
 
-            // UNIT 3
-            { unit: "Unit 3", it: "caricare il telefono", en: "charge the battery" },
-            { unit: "Unit 3", it: "scrivere agli amici", en: "chat to friends" },
-            { unit: "Unit 3", it: "guardare il meteo", en: "check the weather forecast" },
-            { unit: "Unit 3", it: "scaricare una app", en: "download an app" },
-            { unit: "Unit 3", it: "guardare le indicazioni", en: "get directions" },
-            { unit: "Unit 3", it: "ascoltare musica/podcast", en: "listen to music and podcasts" },
-            { unit: "Unit 3", it: "guardare informazioni", en: "look up information" },
-            { unit: "Unit 3", it: "fare una chiamata", en: "make a phone call" },
-            { unit: "Unit 3", it: "postare un messaggio/foto/video", en: "post a message / photo / video on social media" },
-            { unit: "Unit 3", it: "impostare una sveglia", en: "set an alarm" },
-            { unit: "Unit 3", it: "fare una foto", en: "take a photo" },
-            { unit: "Unit 3", it: "guardare un video", en: "watch a video" },
-            { unit: "Unit 3", it: "cavo", en: "cable" },
-            { unit: "Unit 3", it: "tastiera", en: "keyboard" },
-            { unit: "Unit 3", it: "mouse", en: "mouse" },
-            { unit: "Unit 3", it: "caricatore portatile", en: "portable charger" },
-            { unit: "Unit 3", it: "stampante", en: "printer" },
-            { unit: "Unit 3", it: "schermo", en: "screen" },
-            { unit: "Unit 3", it: "casse", en: "speakers" },
-            { unit: "Unit 3", it: "chiavetta USB", en: "USB key" },
-            { unit: "Unit 3", it: "assistente vocale", en: "voice assistant" },
-            { unit: "Unit 3", it: "fotocamera", en: "webcam" },
-            { unit: "Unit 3", it: "cercare (phrasal verb)", en: "look up" },
-            { unit: "Unit 3", it: "una telefonata", en: "a phone call" },
-            { unit: "Unit 3", it: "una sveglia", en: "an alarm" },
-            { unit: "Unit 3", it: "sui social media", en: "on social media" },
-            { unit: "Unit 3", it: "indicazioni stradali", en: "directions" },
-            { unit: "Unit 3", it: "le previsioni del meteo", en: "the weather forecast" },
-
-            // UNIT 4
-            { unit: "Unit 4", it: "film d'azione", en: "action film" },
-            { unit: "Unit 4", it: "film animato", en: "animated film" },
-            { unit: "Unit 4", it: "commedia", en: "comedy" },
-            { unit: "Unit 4", it: "film di fantasia", en: "fantasy film" },
-            { unit: "Unit 4", it: "film horror", en: "horror film" },
-            { unit: "Unit 4", it: "storia romantica", en: "love story" },
-            { unit: "Unit 4", it: "musical", en: "musical" },
-            { unit: "Unit 4", it: "commedia romantica", en: "rom-com" },
-            { unit: "Unit 4", it: "film di fantascienza", en: "science-fiction film" },
-            { unit: "Unit 4", it: "supereroi", en: "superhero film" },
-            { unit: "Unit 4", it: "thriller", en: "thriller" },
-            { unit: "Unit 4", it: "film di guerra", en: "war film" },
-            { unit: "Unit 4", it: "cartone animato", en: "cartoon" },
-            { unit: "Unit 4", it: "talk show", en: "chat show" },
-            { unit: "Unit 4", it: "documentario", en: "documentary" },
-            { unit: "Unit 4", it: "drammatico", en: "drama" },
-            { unit: "Unit 4", it: "quiz", en: "quiz show" },
-            { unit: "Unit 4", it: "reality", en: "reality show" },
-            { unit: "Unit 4", it: "sitcom", en: "sitcom" },
-            { unit: "Unit 4", it: "soap", en: "soap" },
-            { unit: "Unit 4", it: "programma sportivo", en: "sports programme" },
-            { unit: "Unit 4", it: "talent", en: "talent show" },
-            { unit: "Unit 4", it: "tg", en: "the news" },
-            { unit: "Unit 4", it: "serie tv", en: "TV series" },
-
-            // UNIT 5
-            { unit: "Unit 5", it: "mele", en: "apples" },
-            { unit: "Unit 5", it: "banane", en: "bananas" },
-            { unit: "Unit 5", it: "pane", en: "bread" },
-            { unit: "Unit 5", it: "hamburger", en: "burgers" },
-            { unit: "Unit 5", it: "carote", en: "carrots" },
-            { unit: "Unit 5", it: "formaggio", en: "cheese" },
-            { unit: "Unit 5", it: "pollo", en: "chicken" },
-            { unit: "Unit 5", it: "cioccolato", en: "chocolate" },
-            { unit: "Unit 5", it: "uova", en: "eggs" },
-            { unit: "Unit 5", it: "uva", en: "grapes" },
-            { unit: "Unit 5", it: "prosciutto", en: "ham" },
-            { unit: "Unit 5", it: "maionese", en: "mayonnaise" },
-            { unit: "Unit 5", it: "cipolle", en: "onions" },
-            { unit: "Unit 5", it: "arance", en: "oranges" },
-            { unit: "Unit 5", it: "pasta", en: "pasta" },
-            { unit: "Unit 5", it: "piselli", en: "peas" },
-            { unit: "Unit 5", it: "patate", en: "potatoes" },
-            { unit: "Unit 5", it: "riso", en: "rice" },
-            { unit: "Unit 5", it: "salmone", en: "salmon" },
-            { unit: "Unit 5", it: "tramezzini", en: "sandwiches" },
-            { unit: "Unit 5", it: "salsicce", en: "sausages" },
-            { unit: "Unit 5", it: "pomodori", en: "tomatoes" },
-            { unit: "Unit 5", it: "coca", en: "cola" },
-            { unit: "Unit 5", it: "latte", en: "milk" },
-            { unit: "Unit 5", it: "succo d'arancia", en: "orange juice" },
-            { unit: "Unit 5", it: "acqua", en: "water" },
-            { unit: "Unit 5", it: "biscotti", en: "biscuits" },
-            { unit: "Unit 5", it: "burro", en: "butter" },
-            { unit: "Unit 5", it: "torta", en: "cake" },
-            { unit: "Unit 5", it: "cereali", en: "cereal" },
-            { unit: "Unit 5", it: "patatine fritte", en: "chips" },
-            { unit: "Unit 5", it: "patatine fritte (in busta)", en: "crisps" },
-            { unit: "Unit 5", it: "miele", en: "honey" },
-            { unit: "Unit 5", it: "gelato", en: "ice-cream" },
-            { unit: "Unit 5", it: "marmellata", en: "jam" },
-            { unit: "Unit 5", it: "melone", en: "melon" },
-            { unit: "Unit 5", it: "funghi", en: "mushrooms" },
-            { unit: "Unit 5", it: "olio e aceto", en: "oil and vinegar" },
-            { unit: "Unit 5", it: "sale e pepe", en: "salt and pepper" },
-            { unit: "Unit 5", it: "fragole", en: "strawberries" },
-            { unit: "Unit 5", it: "zucchero", en: "sugar" },
-            { unit: "Unit 5", it: "dolci", en: "sweets" },
-            { unit: "Unit 5", it: "pane tostato", en: "toast" },
-            { unit: "Unit 5", it: "tonno", en: "tuna" },
-            { unit: "Unit 5", it: "yogurt", en: "yoghurt" },
-            { unit: "Unit 5", it: "caffè", en: "coffee" },
-            { unit: "Unit 5", it: "gazzosa", en: "lemonade" },
-            { unit: "Unit 5", it: "tè", en: "tea" },
-            { unit: "Unit 5", it: "una bottiglia di", en: "a bottle of" },
-            { unit: "Unit 5", it: "una ciotola di", en: "a bowl of" },
-            { unit: "Unit 5", it: "una tazza di", en: "a cup of" },
-            { unit: "Unit 5", it: "un pacchetto di", en: "a packet of" },
-            { unit: "Unit 5", it: "una fetta di", en: "a slice of" },
-            { unit: "Unit 5", it: "una lattina di", en: "a tin of" }
-        ];
-
-        let filteredWords = [];
-        let currentQuiz = [];
-        let userAnswers = [];
+        const TOTAL_QUESTIONS = 10;
+        let selectedUnit = 'all';
+        let selectedMode = 'it-en';
+        let currentQuestions = [];
         let currentIndex = 0;
-        let selectedLength = 0;
+        let score = 0;
+        let userAnswers = [];
 
-        // Elementi DOM
-        const unitScreen = document.getElementById('unit-screen');
-        const setupScreen = document.getElementById('setup-screen');
-        const quizScreen = document.getElementById('quiz-screen');
-        const resultsScreen = document.getElementById('results-screen');
-        
-        const selectedUnitLabel = document.getElementById('selected-unit-label');
-        const totalWordsCount = document.getElementById('total-words-count');
-        const questionCounter = document.getElementById('question-counter');
-        const progressText = document.getElementById('progress-text');
-        const progressBar = document.getElementById('progress-bar');
-        
-        const italianWord = document.getElementById('italian-word');
-        const englishInput = document.getElementById('english-input');
-        
-        const finalScoreLabel = document.getElementById('final-score');
-        const feedbackMessage = document.getElementById('feedback-message');
-        const correctionsList = document.getElementById('corrections-list');
-
-        // Invio tramite tastiera
-        englishInput.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') submitAnswer();
-        });
-
-        function shuffleArray(array) {
-            let curId = array.length;
-            while (0 !== curId) {
-                let randId = Math.floor(Math.random() * curId);
-                curId -= 1;
-                let tmp = array[curId];
-                array[curId] = array[randId];
-                array[randId] = tmp;
-            }
-            return array;
+        function selectUnit(unit) {
+            selectedUnit = unit;
+            document.querySelectorAll('.unit-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.unit-btn[data-unit="${unit}"]`).classList.add('active');
         }
 
-        // 1. Scelta dell'unità
-        function selectUnit(unitName) {
-            if (unitName === 'All') {
-                filteredWords = [...database];
-                selectedUnitLabel.innerText = "Tutte le unità selezionate";
-                document.getElementById('header-subtitle').innerText = "Test globale";
+        function selectMode(mode) {
+            selectedMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.mode-btn[data-mode="${mode}"]`).classList.add('active');
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        function startQuiz() {
+            let activeVocab = [];
+            if (selectedUnit === 'all') {
+                Object.values(db).forEach(unitArr => activeVocab = activeVocab.concat(unitArr));
             } else {
-                filteredWords = database.filter(word => word.unit === unitName);
-                selectedUnitLabel.innerText = `${unitName} selezionata`;
-                document.getElementById('header-subtitle').innerText = unitName;
-            }
-            
-            totalWordsCount.innerText = filteredWords.length;
-            
-            unitScreen.classList.add('hidden');
-            setupScreen.classList.remove('hidden');
-        }
-
-        function goBackToUnits() {
-            setupScreen.classList.add('hidden');
-            unitScreen.classList.remove('hidden');
-            document.getElementById('header-subtitle').innerText = "Seleziona un'unità per iniziare";
-        }
-
-        // 2. Avvio del test
-        function startTest(numQuestions) {
-            selectedLength = numQuestions; 
-            let shuffled = shuffleArray([...filteredWords]);
-            
-            if (numQuestions === 'all') {
-                currentQuiz = shuffled;
-            } else {
-                currentQuiz = shuffled.slice(0, Math.min(numQuestions, shuffled.length));
+                activeVocab = [...db[selectedUnit]];
             }
 
-            userAnswers = [];
-            currentIndex = 0;
-
-            setupScreen.classList.add('hidden');
-            quizScreen.classList.remove('hidden');
-            loadQuestion();
-        }
-
-        function retrySameTest() {
-            resultsScreen.classList.add('hidden');
-            startTest(selectedLength);
-        }
-
-        // 3. Logica del quiz
-        function loadQuestion() {
-            englishInput.value = '';
-            let currentWord = currentQuiz[currentIndex];
+            const shuffled = shuffle(activeVocab);
             
-            questionCounter.innerText = `Domanda ${currentIndex + 1} di ${currentQuiz.length}`;
-            let progress = Math.round((currentIndex / currentQuiz.length) * 100);
-            progressText.innerText = `${progress}%`;
-            progressBar.style.width = `${progress}%`;
-            
-            italianWord.innerText = currentWord.it;
-            englishInput.focus();
-
-            let btn = document.getElementById('submit-btn');
-            if (currentIndex === currentQuiz.length - 1) {
-                btn.innerHTML = `<span>Correggi il test</span> <i class="fas fa-check"></i>`;
-                btn.className = "w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-4 px-6 rounded-xl shadow-md transition-all text-lg flex items-center justify-center gap-2";
-            } else {
-                btn.innerHTML = `<span>Conferma</span> <i class="fas fa-arrow-right"></i>`;
-                btn.className = "w-full bg-pink-400 hover:bg-pink-500 text-white font-semibold py-4 px-6 rounded-xl shadow-md transition-all text-lg flex items-center justify-center gap-2";
-            }
-        }
-
-        function cleanString(str) {
-            return str.toLowerCase().replace(/[\/]/g, ' ').replace(/\s+/g, ' ').trim();
-        }
-
-        function submitAnswer() {
-            let answer = englishInput.value;
-            let correctAnswer = currentQuiz[currentIndex].en;
-            
-            userAnswers.push({
-                question: currentQuiz[currentIndex],
-                userAnswer: answer,
-                isCorrect: cleanString(answer) === cleanString(correctAnswer)
-            });
-
-            currentIndex++;
-
-            if (currentIndex < currentQuiz.length) {
-                loadQuestion();
-            } else {
-                showResults();
-            }
-        }
-
-        // 4. Risultati
-        function showResults() {
-            quizScreen.classList.add('hidden');
-            resultsScreen.classList.remove('hidden');
-
-            let correctCount = userAnswers.filter(a => a.isCorrect).length;
-            let total = currentQuiz.length;
-            let percentage = (correctCount / total) * 100;
-
-            finalScoreLabel.innerText = `${correctCount}/${total}`;
-
-            if (percentage === 100) {
-                finalScoreLabel.className = "text-5xl font-bold my-4 text-green-500";
-                feedbackMessage.innerText = "Ottimo lavoro! Nessun errore.";
-                feedbackMessage.className = "text-lg font-medium text-green-600";
-            } else if (percentage >= 60) {
-                finalScoreLabel.className = "text-5xl font-bold my-4 text-amber-500";
-                feedbackMessage.innerText = "Sufficiente, ma controlla le correzioni.";
-                feedbackMessage.className = "text-lg font-medium text-amber-600";
-            } else {
-                finalScoreLabel.className = "text-5xl font-bold my-4 text-red-500";
-                feedbackMessage.innerText = "Ci sono diversi errori da rivedere.";
-                feedbackMessage.className = "text-lg font-medium text-red-600";
-            }
-
-            correctionsList.innerHTML = '';
-            
-            if(percentage === 100) {
-                correctionsList.innerHTML = '<div class="p-4 text-center text-slate-500 font-medium">Hai completato il test senza errori.</div>';
-            }
-
-            userAnswers.forEach((item, index) => {
-                let div = document.createElement('div');
-                
-                if (item.isCorrect) {
-                    div.className = "correct-answer-card bg-white p-4 rounded-lg shadow-sm border border-slate-100";
-                    div.innerHTML = `
-                        <p class="font-semibold text-slate-700 mb-1">${index + 1}. ${item.question.it}</p>
-                        <p class="text-green-500 text-sm font-semibold"><i class="fas fa-check mr-1"></i> ${item.question.en}</p>
-                    `;
-                } else {
-                    div.className = "wrong-answer-card bg-white p-4 rounded-lg shadow-sm border border-slate-100";
-                    let userTyped = item.userAnswer.trim() === "" ? "(Vuoto)" : item.userAnswer;
-                    div.innerHTML = `
-                        <p class="font-semibold text-slate-700 mb-2">${index + 1}. ${item.question.it}</p>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-                            <div class="bg-red-50 p-2 rounded">
-                                <span class="text-red-400 text-xs uppercase block mb-1">Tua risposta</span>
-                                <span class="text-red-500 line-through">${userTyped}</span>
-                            </div>
-                            <div class="bg-green-50 p-2 rounded">
-                                <span class="text-green-500 text-xs uppercase block mb-1">Corretta</span>
-                                <span class="text-green-600 font-bold">${item.question.en}</span>
-                            </div>
-                        </div>
-                    `;
+            // Imposta la modalità specifica per ogni domanda (utile per il mix)
+            currentQuestions = shuffled.slice(0, TOTAL_QUESTIONS).map(q => {
+                let qMode = selectedMode;
+                if (selectedMode === 'mixed') {
+                    qMode = Math.random() > 0.5 ? 'it-en' : 'en-it';
                 }
-                correctionsList.appendChild(div);
+                return { ...q, mode: qMode };
             });
-        }
-    </script>
-</body>
-</html>
-
-
-```
+            
+            currentIndex = 0;
+            score = 0;
+            userAnswers 
