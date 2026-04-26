@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -525,4 +524,149 @@
             
             currentIndex = 0;
             score = 0;
-            userAnswers 
+            userAnswers = [];
+            
+            showScreen('quiz-screen');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = currentQuestions[currentIndex];
+            const isItToEn = q.mode === 'it-en';
+            
+            const promptText = isItToEn ? q.it : q.en;
+            const badgeText = isItToEn ? "Traduci in 🇬🇧" : "Traduci in 🇮🇹";
+            const placeholder = isItToEn ? "Scrivi in inglese..." : "Scrivi in italiano...";
+            
+            document.getElementById('question-counter').innerText = `Domanda ${currentIndex + 1}/${currentQuestions.length}`;
+            document.getElementById('direction-badge').innerText = badgeText;
+            document.getElementById('question-text').innerText = promptText;
+            
+            const pct = (currentIndex / currentQuestions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+            
+            const input = document.getElementById('answer-input');
+            input.placeholder = placeholder;
+            input.value = '';
+            input.focus();
+        }
+
+        // Funzione per la pulizia delle stringhe
+        function cleanStr(str) {
+            // Rimuove parentesi e loro contenuto, e normalizza spazi
+            let cleaned = str.toLowerCase().replace(/\([^)]*\)/g, '').replace(/\s+/g, ' ').trim();
+            return cleaned;
+        }
+
+        function checkMatch(user, correct) {
+            const u = cleanStr(user);
+            const c = cleanStr(correct);
+            
+            if (u === c) return true;
+            
+            // Gestione opzioni con slash (es. "bus / pullman" -> accetta "bus" o "pullman")
+            if (c.includes('/')) {
+                const parts = c.split('/').map(p => p.trim());
+                if (parts.includes(u)) return true;
+            }
+            
+            // Fallback per controllo della stringa originale senza rimozione parentesi
+            // Es. Se l'utente scrive "patatine (in busta)" e la risposta era quella.
+            const uRaw = user.toLowerCase().replace(/\s+/g, ' ').trim();
+            const cRaw = correct.toLowerCase().replace(/\s+/g, ' ').trim();
+            if (uRaw === cRaw) return true;
+
+            return false;
+        }
+
+        function checkAnswer() {
+            const inputVal = document.getElementById('answer-input').value;
+            if(inputVal.trim() === '') return; 
+
+            const q = currentQuestions[currentIndex];
+            const isItToEn = q.mode === 'it-en';
+            
+            const expected = isItToEn ? q.en : q.it;
+            const prompt = isItToEn ? q.it : q.en;
+            
+            const isCorrect = checkMatch(inputVal, expected);
+            if (isCorrect) score++;
+
+            userAnswers.push({
+                mode: q.mode,
+                prompt: prompt,
+                expected: expected,
+                user: inputVal,
+                isCorrect: isCorrect
+            });
+
+            currentIndex++;
+            if (currentIndex < currentQuestions.length) {
+                loadQuestion();
+            } else {
+                endQuiz();
+            }
+        }
+
+        function endQuiz() {
+            document.getElementById('progress-bar').style.width = '100%';
+            setTimeout(() => {
+                showScreen('result-screen');
+                buildResults();
+            }, 300); 
+        }
+
+        function buildResults() {
+            const scoreCircle = document.getElementById('score-display');
+            scoreCircle.innerText = `${score}/10`;
+            
+            let msg = "";
+            let color = "";
+            if (score === 10) { msg = "Perfetto! Eccellente 🏆"; color = "var(--correct)"; }
+            else if (score >= 7) { msg = "Ottimo lavoro! 🌟"; color = "var(--primary)"; }
+            else if (score >= 5) { msg = "Sufficiente, ma puoi migliorare. 👍"; color = "#f39c12"; }
+            else { msg = "C'è da ripassare! 📚"; color = "var(--wrong)"; }
+            
+            const msgEl = document.getElementById('vote-message');
+            msgEl.innerText = msg;
+            msgEl.style.color = color;
+            scoreCircle.style.background = color;
+
+            const listEl = document.getElementById('results-list');
+            listEl.innerHTML = '';
+
+            userAnswers.forEach(ans => {
+                const item = document.createElement('div');
+                item.className = `result-item ${ans.isCorrect ? 'correct' : 'wrong'}`;
+                
+                const fPrompt = ans.mode === 'it-en' ? '🇮🇹' : '🇬🇧';
+                const fExp = ans.mode === 'it-en' ? '🇬🇧' : '🇮🇹';
+                
+                let html = `<div class="result-prompt">${fPrompt} ${ans.prompt}</div>`;
+                
+                if (ans.isCorrect) {
+                    html += `<div class="result-expected">✅ ${fExp} ${ans.expected}</div>`;
+                } else {
+                    html += `
+                        <div>
+                            <span class="result-err">${ans.user}</span>
+                            <span class="result-expected">👉 ${fExp} ${ans.expected}</span>
+                        </div>
+                    `;
+                }
+                
+                item.innerHTML = html;
+                listEl.appendChild(item);
+            });
+        }
+
+        function resetQuiz() {
+            showScreen('start-screen');
+        }
+
+        document.getElementById('answer-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkAnswer();
+        });
+    </script>
+</body>
+</html>
